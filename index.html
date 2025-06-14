@@ -2,12 +2,13 @@
 
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1252">
+<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 <style>
 body {
   box-sizing: border-box;
   background: #2a2724;
   color: rgba(192, 225, 255);
-  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  font-family: 'Roboto', "Helvetica Neue", Helvetica, sans-serif;
   user-select: none;
 }
 
@@ -28,10 +29,11 @@ main {
 }
 
 h1 {
-  padding-top: 1rem;
+  padding-top: 0.1rem;
   color: #D9D9D9;
   font-size: 3rem;
   text-align: center;
+  margin-bottom: 1rem;
 }
 
 h1 span {
@@ -66,7 +68,7 @@ label input {
 
 label input:checked + .mark {
   background: transparent;
-  color: #ffffff;
+  color: #D9D9D9;
 }
 
 label input:checked + .mark::before {
@@ -84,14 +86,15 @@ label .mark {
   background: #261111;
   font-size: 1em;
   text-align: center;
+  color: #FFFFFF;
 }
 
 button {
   padding: .2rem;
-  background: rgba(13, 21, 46);
+  background: #590C05;
   font-size: .9em;
   text-align: center;
-  color: #ede4cc;
+  color: #D9D9D9;
   border: 3px solid #590C05;
   border-radius: 15px;
 }
@@ -270,7 +273,7 @@ window.onload = () => shuffleAndFill();// Populate the div when the page loads
     <h1>
     BLACKHILL<br>
     <span>Xs</span>
-    <span>'n'</span>
+    <span>&</span>
     <span>Os</span>
   </h1>
   <!-- Warning: the following code sucks, but it works, damn it! -->
