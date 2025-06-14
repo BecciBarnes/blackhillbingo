@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 
-
 <html><head>
 <meta http-equiv="content-type" content="text/html; charset=windows-1252">
 <style>
@@ -25,12 +24,12 @@ main {
   border-radius: 15px;
   background: transparent;
   background-image: url(bgpic.jpg);
-  background-size: contain;
+  background-size: cover;
 }
 
 h1 {
   padding-top: 1rem;
-  color: #FF0000;
+  color: #D9D9D9;
   font-size: 3rem;
   text-align: center;
 }
@@ -55,9 +54,9 @@ label {
   display: block;
   width: 9.5rem;
   height: 9.5rem;
-  border: 3px solid #00FF00;
+  border: 3px solid #590C05;
   border-radius: 15px;
-  background: rgba(207, 106, 50, 0.5);
+  background:#590C05;
 
 }
 
@@ -82,7 +81,7 @@ label .mark {
   height: 9.15rem;
   padding: .2rem;
   border-radius: 12px;
-  background: rgba(13, 21, 46);
+  background: #261111;
   font-size: 1em;
   text-align: center;
 }
@@ -93,7 +92,7 @@ button {
   font-size: .9em;
   text-align: center;
   color: #ede4cc;
-  border: 3px solid #84766b;
+  border: 3px solid #590C05;
   border-radius: 15px;
 }
 
@@ -222,42 +221,41 @@ function shuffleAndFill(forceShuffle = false) {
     // Retrieve and parse URL parameters
     const params = new URLSearchParams(window.location.search);
     const arrayString = params.get('saved');
-
-    let shuffledWords = [];
-    console.log(forceShuffle);
-	console.log(arrayString);
-    if (arrayString && forceShuffle) {
-		window.location = window.location.href.split("?")[0];
-	} else if (arrayString){
-        shuffledWords = JSON.parse(decodeURIComponent(arrayString));
-    } else {
-        shuffledWords = randomWords.sort(() => 0.5 - Math.random());
-    }
-
-    // Fill the div cells with the first 25 shuffled words
-    for (let i = 1; i <= 25; i++) { // Start from 1 to match the IDs
-        document.getElementById(`cell${i}`).innerHTML = shuffledWords[i - 1] || '';
+	
+	// Step 1: Collect locked words and their indices
+    const lockedWords = {};
+    for (let i = 1; i <= 9; i++) {
+        const checkbox = document.querySelector(`label:nth-of-type(${i}) input[type="checkbox"]`);
+        const cell = document.getElementById(`cell${i}`);
+        if (checkbox && checkbox.checked && cell) {
+            lockedWords[i - 1] = cell.textContent; // save zero-based index & word
+        }
     }
 	
-	// Slice to get the first 24 items
-    const slicedArray = shuffledWords.slice(0, 25);
+	// Step 2: Get shuffled words array
+    let shuffledWords = [];
+    if (arrayString && forceShuffle) {
+		shuffledWords = [...randomWords].sort(() => 0.5 - Math.random());
+    } else if (arrayString) {
+        shuffledWords = JSON.parse(decodeURIComponent(arrayString));
+    } else {
+        shuffledWords = [...randomWords].sort(() => 0.5 - Math.random());
+    }
+	
+	// Step 3: Remove locked words from shuffledWords to avoid duplicates
+    const lockedWordValues = Object.values(lockedWords);
+    shuffledWords = shuffledWords.filter(word => !lockedWordValues.includes(word));
     
-    // Encode the sliced array and create the new URL
-    const newArrayString = encodeURIComponent(JSON.stringify(slicedArray));
-    const url = `http://marsupieni.net/snip/diwsbingo.html?saved=${newArrayString}`;
-
-    // Get the link element by its ID
-    const link = document.getElementById('savedLink');
-
-    if (link) {
-        // Set the new URL
-        link.href = url;
-		if (arrayString){
-			link.innerHTML = "";
-			const savedspan = document.getElementById('thisIsSaved');
-			savedspan.innerHTML = "Save this card by bookmarking this page."
-			}
-		} 
+    // Step 4: Fill the cells, keeping locked words fixed, shuffle the rest
+    let shuffleIndex = 0;
+    for (let i = 0; i < 9; i++) {
+        if (lockedWords.hasOwnProperty(i)) {
+            document.getElementById(`cell${i + 1}`).textContent = lockedWords[i];
+        } else {
+            document.getElementById(`cell${i + 1}`).textContent = shuffledWords[shuffleIndex] || '';
+            shuffleIndex++;
+        }
+    }
 }
 
 window.onload = () => shuffleAndFill();// Populate the div when the page loads
@@ -267,7 +265,7 @@ window.onload = () => shuffleAndFill();// Populate the div when the page loads
   
 	<main>
 	<form>
-	    <button onclick="shuffleAndFill(true)">Generate new!</button> <a id="savedLink" href=""><button>Open as a saveable link.</button></a> <span id ="thisIsSaved"></span>
+	    <button type="button" onclick="shuffleAndFill()">Generate new!</button>
 
     <h1>
     BLACKHILL<br>
